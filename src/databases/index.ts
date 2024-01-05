@@ -2,6 +2,8 @@ import { RxDatabase, addRxPlugin, createRxDatabase } from 'rxdb';
 import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 import { TodoCollection, todoSchema } from './models/todo';
+import { replicateWithWebsocketServer } from 'rxdb/plugins/replication-websocket';
+import { sync } from './sync';
 
 addRxPlugin(RxDBDevModePlugin);
 
@@ -18,6 +20,12 @@ export async function initalizeDB() {
       schema: todoSchema
     }
   })
+
+  try {
+    sync(database.todos)
+  } catch (error) {
+    console.log("SDGASDGASD", error)
+  }
 
   return database;
 }
